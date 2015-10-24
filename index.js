@@ -6,7 +6,7 @@ var path = require('path');
 var os = require('os');
 var fs = require('fs');
 var async = require('async');
-var merge = require("merge").recursive;
+var merge = require('merge').recursive;
 
 // A typical sass error looks like this
 var SassError = {
@@ -217,7 +217,8 @@ module.exports = function (content) {
     opt.modules = opt.modules || [];
 
     // Define the job queue...
-    var asyncSassJobQueue = async.queue(sassport(opt.modules).render, threadPoolSize - 1);
+    var sassportInstance = sassport(opt.modules);
+    var asyncSassJobQueue = async.queue(sassportInstance.render.bind(sassportInstance), threadPoolSize - 1);
 
     // Skip empty files, otherwise it will stop webpack, see issue #21
     if (opt.data.trim() === '') {
@@ -260,7 +261,7 @@ module.exports = function (content) {
     // start the actual rendering
     if (isSync) {
         try {
-            result = sassport(opt.modules).renderSync(opt);
+            result = sassportInstance.renderSync(opt);
             addIncludedFilesToWebpack(result.stats.includedFiles);
             return result.css.toString();
         } catch (err) {
