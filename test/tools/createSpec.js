@@ -1,6 +1,6 @@
 'use strict';
 
-var sass = require('node-sass');
+var sassport = require('sassport');
 var fs = require('fs');
 var path = require('path');
 
@@ -21,7 +21,7 @@ function createSpec(ext) {
             var fileWithoutExt = file.slice(0, -ext.length - 1);
             var css;
 
-            css = sass.renderSync({
+            css = sassport().renderSync({
                 file: fileName,
                 importer: function (url) {
                     if (/\.css$/.test(url) === false) { // Do not transform css imports

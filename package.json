@@ -1,7 +1,7 @@
 {
   "name": "sass-loader",
-  "version": "3.0.0",
-  "description": "Sass loader for webpack",
+  "version": "0.1.0",
+  "description": "Use SassPort to render your Sass for WebPack! (sass-loader fork)",
   "main": "index.js",
   "scripts": {
     "create-spec": "node test/tools/runCreateSpec.js",
@@ -16,23 +16,27 @@
   },
   "keywords": [
     "sass",
+    "sassport",
     "libsass",
     "webpack",
     "loader"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/jtangelder/sass-loader.git"
+    "url": "git://github.com/IngwiePhoenix/sassport-loader.git"
   },
-  "author": "J. Tangelder",
+  "author": [
+      "J. Tangelder",
+      "Ingwie Phoenix <ingwie2000@gmail.com>"
+  ],
   "license": "MIT",
   "peerDependencies": {
-    "node-sass": "^3.3.3",
     "webpack": "^1.12.2"
   },
   "dependencies": {
     "async": "^1.4.0",
-    "loader-utils": "^0.2.5"
+    "loader-utils": "^0.2.5",
+    "sassport": "^0.3.0"
   },
   "devDependencies": {
     "bootstrap-sass": "^3.3.5",
@@ -41,7 +45,7 @@
     "file-loader": "^0.8.4",
     "jshint": "^2.8.0",
     "mocha": "^2.0.1",
-    "node-sass": "3.3.3",
+    "sassport": "^0.3.0",
     "raw-loader": "^0.5.1",
     "should": "^7.0.2",
     "style-loader": "^0.12.3",

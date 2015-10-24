@@ -14,7 +14,7 @@ var pathToErrorFileNotFound2 = path.resolve(__dirname, './scss/error-file-not-fo
 var pathToErrorFile = path.resolve(__dirname, './scss/error.scss');
 var pathToErrorImport = path.resolve(__dirname, './scss/error-import.scss');
 
-describe('sass-loader', function () {
+describe('sassport-loader', function () {
 
     describe('basic', function () {
 

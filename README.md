@@ -1,11 +1,13 @@
 # Sass loader for [webpack](http://webpack.github.io/)
 
+## This is a fork.
+I forked `sass-loader` and left in most of the code for now - but I am planning to change this code so it will work with the [SassPort](https://github.com/davidkpiano/sassport) module. My goal is to keep API compatibility and have this module pass the same tests as the original `sass-loader`, just that this one has more features.
+
 ## Install
 
-`npm install sass-loader node-sass webpack --save-dev`
+`npm install sassport-loader --save`
 
-The sass-loader requires [node-sass](https://github.com/sass/node-sass) and [webpack](https://github.com/webpack/webpack)
-as [`peerDependency`](https://docs.npmjs.com/files/package.json#peerdependencies). Thus you are able to specify the required versions accurately.
+The sass/sassport-loader requires [node-sass](https://github.com/sass/node-sass) or [SassPort](https://github.com/davidkpiano/sassport) and [webpack](https://github.com/webpack/webpack).
 
 ---
 
@@ -14,16 +16,16 @@ as [`peerDependency`](https://docs.npmjs.com/files/package.json#peerdependencies
 [Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
 
 ``` javascript
-var css = require("!raw!sass!./file.scss");
+var css = require("!raw!sassport!./file.scss");
 // => returns compiled css code from file.scss, resolves imports
-var css = require("!css!sass!./file.scss");
+var css = require("!css!sassport!./file.scss");
 // => returns compiled css code from file.scss, resolves imports and url(...)s
 ```
 
 Use in tandem with the [`style-loader`](https://github.com/webpack/style-loader) and [`css-loader`](https://github.com/webpack/css-loader) to add the css rules to your document:
 
 ``` javascript
-require("!style!css!sass!./file.scss");
+require("!style!css!sassport!./file.scss");
 ```
 *NOTE: If you encounter module errors complaining about a missing `style` or `css` module, make sure you have installed all required loaders via npm.*
 
@@ -37,7 +39,7 @@ module.exports = {
     loaders: [
       {
         test: /\.scss$/,
-        loaders: ["style", "css", "sass"]
+        loaders: ["style", "css", "sassport"]
       }
     ]
   }
@@ -46,9 +48,9 @@ module.exports = {
 
 Then you only need to write: `require("./file.scss")`.
 
-### Sass options
+### SassPort modules and options
 
-You can pass any Sass specific configuration options through to the render function via [query parameters](http://webpack.github.io/docs/using-loaders.html#query-parameters).
+In order to pass additional things to the SassPort `.render()` function, use the SassPort entry within your config:
 
 ``` javascript
 module.exports = {
@@ -56,18 +58,23 @@ module.exports = {
     loaders: [
       {
         test: /\.scss$/,
-        loaders: ["style", "css", "sass?outputStyle=expanded&" +
-          "includePaths[]=" +
-            encodeURIComponent(path.resolve(__dirname, "./some-folder")) + "&" +
-          "includePaths[]=" +
-            encodeURIComponent(path.resolve(__dirname, "./another-folder"))]
+        loaders: ["style", "css", "sassport"]
       }
     ]
+  },
+  Sassport: {
+    modules: [
+      // These modules will be passed to SassPort
+      require('sassport-foo'),
+      require('sassport-bar')
+    ],
+    outputStyle: "compressed",
+    // ... and more ...
   }
 };
 ```
 
-See [node-sass](https://github.com/andrew/node-sass) for all available options.
+See [node-sass](https://github.com/andrew/node-sass) for all available options. Just note that SassPort might not support all and every option.
 
 ### Imports
 
@@ -90,9 +97,12 @@ module.exports = {
       {
         test: /\.sass$/,
         // Passing indentedSyntax query param to node-sass
-        loaders: ["style", "css", "sass?indentedSyntax"]
+        loaders: ["style", "css", "sassport"]
       }
     ]
+  },
+  Sassport: {
+    indentedSyntax: true
   }
 };
 ```
@@ -121,9 +131,12 @@ module.exports = {
         loaders: [
             {
                 test: /\.scss$/,
-                loaders: ["style", "css?sourceMap", "sass?sourceMap"]
+                loaders: ["style", "css?sourceMap", "sassport"]
             }
         ]
+    },
+    Sassport: {
+        sourcemap: true
     }
 };
 ```
@@ -133,3 +146,8 @@ If you want to edit the original Sass files inside Chrome, [there's a good blog 
 ## License
 
 MIT (http://www.opensource.org/licenses/mit-license.php)
+
+## Reminder
+This is a fork. The code is likely to change since I am migrating it to use Sassport instead. Feel free to explore the code, though! :)
+
+Fork is by: Ingwie Phoenix

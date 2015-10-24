@@ -1,11 +1,12 @@
 'use strict';
 
 var utils = require('loader-utils');
-var sass = require('node-sass');
+var sassport = require('sassport');
 var path = require('path');
 var os = require('os');
 var fs = require('fs');
 var async = require('async');
+var merge = require("merge").recursive;
 
 // A typical sass error looks like this
 var SassError = {
@@ -24,7 +25,6 @@ var matchCss = /\.css$/;
 // fs tasks when running the custom importer code.
 // This can be removed as soon as node-sass implements a fix for this.
 var threadPoolSize = process.env.UV_THREADPOOL_SIZE || 4;
-var asyncSassJobQueue = async.queue(sass.render, threadPoolSize - 1);
 
 /**
  * The sass-loader makes node-sass available to webpack modules.
@@ -43,7 +43,7 @@ module.exports = function (content) {
 
     // Allow passing "programmable objects" (e.g. importers) via custom `this.options` field.
     // http://webpack.github.io/docs/how-to-write-a-loader.html#programmable-objects-as-query-option
-    var configKey = query.config || 'sassLoader';
+    var configKey = 'Sassport';
     var configOptions = this.options[configKey] || {};
 
     /**
@@ -210,8 +210,14 @@ module.exports = function (content) {
 
     this.cacheable();
 
-    opt = query;
+    opt = merge(query, configOptions);
     opt.data = content;
+
+    // Modules
+    opt.modules = opt.modules || [];
+
+    // Define the job queue...
+    var asyncSassJobQueue = async.queue(sassport(opt.modules).render, threadPoolSize - 1);
 
     // Skip empty files, otherwise it will stop webpack, see issue #21
     if (opt.data.trim() === '') {
@@ -230,7 +236,7 @@ module.exports = function (content) {
         // deliberately overriding the sourceMap option
         // this value is (currently) ignored by libsass when using the data input instead of file input
         // however, it is still necessary for correct relative paths in result.map.sources
-        opt.sourceMap = this.options.output.path + '/sass.map';
+        opt.sourceMap = this.options.output.path + '/sassport.map';
         opt.omitSourceMapUrl = true;
 
         // If sourceMapContents option is not set, set it to true otherwise maps will be empty/null
@@ -244,23 +250,17 @@ module.exports = function (content) {
     opt.indentedSyntax = Boolean(opt.indentedSyntax);
 
     // Allow passing custom importers to `node-sass`. Accepts `Function` or an array of `Function`s.
-    opt.importer = []
-        .concat(configOptions.importer || [])
-        .concat(getWebpackImporter());
+    // FIXME: Sassport does not seem to accept an array of importers. We only need one anyway.
+    opt.importer = getWebpackImporter();
 
     // `node-sass` uses `includePaths` to resolve `@import` paths. Append the currently processed file.
     opt.includePaths = (opt.includePaths || [])
         .concat(path.dirname(resourcePath));
 
-    // functions can't be set in query, load from sassLoader section in webpack options
-    if (this.options.sassLoader) {
-        opt.functions = this.options.sassLoader.functions;
-    }
-
     // start the actual rendering
     if (isSync) {
         try {
-            result = sass.renderSync(opt);
+            result = sassport(opt.modules).renderSync(opt);
             addIncludedFilesToWebpack(result.stats.includedFiles);
             return result.css.toString();
         } catch (err) {
