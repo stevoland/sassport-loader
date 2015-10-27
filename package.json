@@ -1,5 +1,5 @@
 {
-  "name": "sass-loader",
+  "name": "sassport-loader",
   "version": "0.1.0",
   "description": "Use SassPort to render your Sass for WebPack! (sass-loader fork)",
   "main": "index.js",
