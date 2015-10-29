@@ -1,6 +1,6 @@
 {
   "name": "sassport-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Use SassPort to render your Sass for WebPack! (sass-loader fork)",
   "main": "index.js",
   "scripts": {
@@ -26,8 +26,8 @@
     "url": "git://github.com/IngwiePhoenix/sassport-loader.git"
   },
   "author": [
-      "J. Tangelder",
-      "Ingwie Phoenix <ingwie2000@gmail.com>"
+    "J. Tangelder",
+    "Ingwie Phoenix <ingwie2000@gmail.com>"
   ],
   "license": "MIT",
   "peerDependencies": {
@@ -36,6 +36,7 @@
   "dependencies": {
     "async": "^1.4.0",
     "loader-utils": "^0.2.5",
+    "merge": "^1.2.0",
     "sassport": "^0.3.0"
   },
   "devDependencies": {
