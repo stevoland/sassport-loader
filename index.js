@@ -7,6 +7,7 @@ var os = require('os');
 var fs = require('fs');
 var async = require('async');
 var merge = require('merge').recursive;
+var requireFresh = require("requirefresh");
 
 // A typical sass error looks like this
 var SassError = {
@@ -217,7 +218,15 @@ module.exports = function (content) {
     opt.modules = opt.modules || [];
 
     // Define the job queue...
-    var sassportInstance = sassport(opt.modules);
+    var sassportInstance = sassport(opt.modules, {
+        // This hook allows the require()'d files to be added
+        // to WebPack's deps.
+        onRequire: function(file) {
+            var scssModule = requireFresh(file);
+            self.addDependency(file);
+            return scssModule;
+        }
+    });
     var asyncSassJobQueue = async.queue(sassportInstance.render.bind(sassportInstance), threadPoolSize - 1);
 
     // Skip empty files, otherwise it will stop webpack, see issue #21

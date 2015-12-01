@@ -1,0 +1,10 @@
+$colors: require("./my_colors.js");
+@each $color in $colors {
+    .color-#{$color} {
+        color: $color
+    }
+}
+
+body {
+    color: map-get($colors, "neon");
+}
