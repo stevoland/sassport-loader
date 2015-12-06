@@ -2,5 +2,5 @@
 
 module.exports = {
     orange: "mild-orange",
-    neon: "lime"
+    neon: "green"
 }

@@ -1,24 +1,36 @@
-var extractText = require("extract-text-webpack-plugin");
-var extractor = new extractText("style","[name].css");
+var path = require('path');
+var webpack = require('webpack');
+
 module.exports = {
-    entry: "./main.js",
+    devtool: 'eval',
+    debug: true,
+    entry:  [
+        'webpack-hot-middleware/client?path=/__webpack_hmr',
+        './main.js'
+    ],
     output: {
-        path: "./build",
+        path: path.join(__dirname, 'build'),
+        publicPath: 'http://localhost:8081/build/',
         filename: "bundle.js"
     },
     module: {
         loaders: [
             {
                 test: /\.scss$/,
-                loader: extractor.extract(
+                loaders: [
                     "style",
-                    [
-                        "css",
-                        require.resolve("../index.js")
-                    ].join("!")
-                )
+                    "css",
+                    require.resolve("../index.js")
+                ]
             }
         ]
     },
-    plugins: [extractor]
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ],
+    Sassport: {
+        modules: [
+            // require('./theme')
+        ]
+    }
 }

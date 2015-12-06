@@ -6,5 +6,6 @@ $colors: require("./my_colors.js");
 }
 
 body {
-    color: map-get($colors, "neon");
+    background: map-get($colors, "neon");
 }
+
