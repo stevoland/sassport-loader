@@ -30,7 +30,7 @@ module.exports = {
     ],
     Sassport: {
         modules: [
-            // require('./theme')
+            require('./theme')
         ]
     }
 }
